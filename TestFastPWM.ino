@@ -4,7 +4,7 @@
 #define LED_PIN 9
 #define LED_PIN_BITMASK 1 << (LED_PIN % 8)
 #define TICKS_PER_SECOND (F_CPU / 1024)
-#define DUTY_CYCLE_25_PCTG TICKS_PER_SECOND / 3
+#define DUTY_CYCLE TICKS_PER_SECOND / 3
 
 void setup() {
   cli();
@@ -30,7 +30,7 @@ void setup() {
   ICR1 = TICKS_PER_SECOND - 1;
   
   //set to 25% duty cycle
-  OCR1A = DUTY_CYCLE_25_PCTG - 1;
+  OCR1A = DUTY_CYCLE - 1;
   
   TCNT1 = 0;
   sei();
