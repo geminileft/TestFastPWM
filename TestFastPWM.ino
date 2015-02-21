@@ -6,6 +6,11 @@
 #define TICKS_PER_SECOND (F_CPU / 1024)
 #define DUTY_CYCLE TICKS_PER_SECOND / 3
 
+typedef unsigned int uint;
+
+volatile uint pulseCount;
+volatile bool on;
+
 void setup() {
   cli();
   
@@ -33,9 +38,24 @@ void setup() {
   OCR1A = DUTY_CYCLE - 1;
   
   TCNT1 = 0;
+  pulseCount = 0;
+  on = true;
+  TIMSK1 = (1 << TOIE1);
   sei();
 }
 
 void loop() {
 }
 
+ISR(TIMER1_OVF_vect) {
+  ++pulseCount;
+  if (pulseCount == 5) {
+    on = !on;
+    if (on) {
+      TCCR1A |= (1 << COM1A1);
+    } else {
+      TCCR1A &= ~(1 << COM1A1);
+    }
+    pulseCount = 0;
+  }
+}
